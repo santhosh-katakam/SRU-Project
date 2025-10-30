@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>RescueRide — Find Nearby Mechanics Instantly</title>
+	<meta name="description" content="Vehicle breakdown? Find nearby mechanics and towing services in seconds. GPS-powered, verified professionals, and instant payments." />
+	<link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet" />
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+	<style>
+		:root{--bg:#0f1724;--card:#0b1220;--accent:#00b894;--muted:#94a3b8}
+		html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;color:#e6eef6;background:linear-gradient(180deg,#071025 0%, #071834 60%)}
+		.container{max-width:1100px;margin:32px auto;padding:24px}
+		header{display:flex;align-items:center;justify-content:space-between}
+		.brand{display:flex;gap:12px;align-items:center}
+		.logo{width:48px;height:48px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#06b6d4,#7c3aed);border-radius:10px;color:white;font-weight:700}
+		h1{font-size:2rem;margin:0 0 8px}
+		p.lead{color:var(--muted);margin:0 0 18px}
+		.hero{display:grid;grid-template-columns:1fr 420px;gap:24px;align-items:center;margin-top:18px}
+		.card{background:rgba(255,255,255,0.03);border-radius:12px;padding:20px;box-shadow:0 6px 18px rgba(2,6,23,0.6)}
+		.cta{display:flex;gap:12px;margin-top:16px}
+		.btn{padding:12px 16px;border-radius:10px;border:0;cursor:pointer;font-weight:600}
+		.btn-primary{background:var(--accent);color:#021019}
+		.btn-ghost{background:transparent;color:#cfe9f1;border:1px solid rgba(255,255,255,0.06)}
+			/* Keep the map contained to the card: fixed height and prevent it from expanding to the viewport */
+			#map{height:520px;max-height:520px;width:100%;border-radius:10px}
+
+			/* Leaflet popup styling */
+			.leaflet-popup-content-wrapper{
+				background:linear-gradient(180deg, rgba(6,12,20,0.98), rgba(6,12,20,0.95));
+				color:#e6eef6;
+				border-radius:10px;
+				box-shadow:0 10px 30px rgba(2,6,23,0.6);
+				border:1px solid rgba(255,255,255,0.04);
+			}
+			.leaflet-popup-tip-container .leaflet-popup-tip{
+				background:linear-gradient(180deg, rgba(6,12,20,0.98), rgba(6,12,20,0.95));
+			}
+			.leaflet-popup-content{font-family:Inter, system-ui, Arial, sans-serif; font-size:14px; line-height:1.3}
+			.popup-title{font-weight:700;color:#fff;margin-bottom:6px;display:block}
+			.popup-rating{color:#ffd166;font-weight:600;margin-right:6px}
+			.popup-actions{margin-top:8px;display:flex;gap:8px}
+			.popup-actions button{padding:6px 10px;border-radius:8px;border:0;cursor:pointer;font-weight:600;font-size:13px}
+			.popup-actions button.navigate{background:linear-gradient(90deg,#06b6d4,#00b894);color:#021019}
+			.popup-actions button.pay{background:transparent;border:1px solid rgba(255,255,255,0.06);color:#cfe9f1}
+			.popup-actions button:active{transform:translateY(1px)}
+		.features{display:flex;gap:12px;margin-top:22px}
+		.feature{flex:1;padding:14px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));}
+		.feature h4{margin:0 0 8px}
+		footer{text-align:center;color:var(--muted);margin:36px 0 8px}
+		@media (max-width:900px){.hero{grid-template-columns:1fr;}.container{padding:12px}.brand .title{display:none}}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<header>
+			<div class="brand">
+				<div class="logo">RR</div>
+				<div>
+					<div class="title"><strong>RescueRide</strong></div>
+					<div style="font-size:12px;color:var(--muted)">24/7 Emergency Vehicle Assistance</div>
+				</div>
+			</div>
+			<nav style="display:flex;gap:12px;align-items:center">
+				<a href="#features" style="color:#cfe9f1;text-decoration:none">Features</a>
+				<a href="#learn" style="color:#cfe9f1;text-decoration:none">Learn</a>
+			</nav>
+		</header>
+
+		<section class="hero">
+			<div>
+				<div class="card">
+					<h1>Find Nearby Mechanics in Seconds</h1>
+					<p class="lead">Vehicle breakdown? No problem. Connect with trusted mechanics and towing services near you instantly. GPS-powered, reliable, and fast.</p>
+					<div class="cta">
+						<button id="findBtn" class="btn btn-primary">Find Mechanics Now</button>
+						<button id="learnBtn" class="btn btn-ghost">Learn More</button>
+					</div>
+					<div class="features" id="features">
+						<div class="feature">
+							<h4>Real-Time GPS</h4>
+							<p style="color:var(--muted);margin:0">Track nearby mechanics and get live navigation to their location.</p>
+						</div>
+						<div class="feature">
+							<h4>Verified Professionals</h4>
+							<p style="color:var(--muted);margin:0">All mechanics are verified with ratings and reviews from real customers.</p>
+						</div>
+						<div class="feature">
+							<h4>Instant Payment</h4>
+							<p style="color:var(--muted);margin:0">Secure QR code payments for transparent and hassle-free transactions.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div>
+				<div class="card" style="padding:0;overflow:hidden">
+					<div id="map"></div>
+				</div>
+			</div>
+		</section>
+
+		<section id="learn" style="margin-top:18px">
+			<div class="card">
+				<h3>How it works</h3>
+				<ol style="color:var(--muted)">
+					<li>Tap "Find Mechanics Now" and allow location access.</li>
+					<li>See nearby mechanics on the live map, tap a marker to view details.</li>
+					<li>Contact, navigate, and pay instantaneously via secure QR.</li>
+				</ol>
+			</div>
+		</section>
+
+		<footer>Built with ❤️ — Demo static site (mock data). Geolocation requires HTTPS in some browsers.</footer>
+	</div>
+
+	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+	<script>
+		// Minimal interactive behavior: geolocate, show user marker and nearby mocked mechanics
+		const map = L.map('map', {zoomControl:true, attributionControl:false}).setView([20,0],2);
+		L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom:19}).addTo(map);
+
+		let userMarker;
+		const mechanicsLayer = L.layerGroup().addTo(map);
+
+		function generateNearby(lat, lng){
+			mechanicsLayer.clearLayers();
+			const names = [
+				'QuickFix Auto', 'Neighborhood Tow', 'Speedy Mechanics', 'Star Mobile Mechanics', 'Ace Towing']
+					const servicesList = [
+						['Towing', 'Flat Tire', 'Fuel Delivery'],
+						['Towing', 'Battery Jump', 'Lockout'],
+						['Flat Tire', 'Fuel Delivery', 'Minor Repairs'],
+						['Towing', 'Flat Tire', 'Battery Jump'],
+						['Towing', 'Fuel Delivery', 'Lockout']
+					];
+					for(let i=0;i<names.length;i++){
+						const dx = (Math.random()-0.5)/500; // ~±0.002
+						const dy = (Math.random()-0.5)/500;
+						const mlat = lat + dx;
+						const mlng = lng + dy;
+						const rating = (4 + Math.round(Math.random()*6)/10).toFixed(1); // 4.0-4.6
+						const distance = (1 + Math.random()*2).toFixed(1); // 1.0-3.0 km
+						const available = true;
+						const experience = 8 + Math.floor(Math.random()*5); // 8-12 years
+						const services = servicesList[i % servicesList.length];
+						const phone = '+91 93914 82754';
+						const upiId = 'srinivasreddylakkidi2275-1@okicici';
+						const upiName = 'Srinivas Reddy';
+						const upiUri = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(upiName)}&cu=INR`;
+						const popupHtml = `
+							<div class="popup-card">
+								<div class="popup-header">
+									<div class="popup-title">${names[i]}</div>
+									<div class="popup-rating"><span style="color:#ffd166;font-size:1.1em">★</span> ${rating} <span style="color:#94a3b8;font-size:0.95em">• ${distance} km away</span></div>
+								</div>
+								<div class="popup-row" style="margin:8px 0 4px 0;display:flex;align-items:center;gap:10px;">
+									<span class="popup-available" style="background:#27ae60;color:#fff;padding:2px 10px;border-radius:12px;font-size:13px;font-weight:600;">Available Now</span>
+									<span style="color:#94a3b8;font-size:13px;display:flex;align-items:center;gap:4px"><span style="font-size:15px">&#128337;</span> ${experience} years of experience</span>
+								</div>
+								<div class="popup-services" style="margin:8px 0 10px 0;">
+									<div style="color:#94a3b8;font-size:13px;margin-bottom:4px;font-weight:600">Services</div>
+									<div style="display:flex;gap:6px;flex-wrap:wrap;">
+										${services.map(s => `<span style='background:#0b1220;color:#00b894;padding:3px 10px;border-radius:8px;font-size:13px;font-weight:500'>${s}</span>`).join(' ')}
+									</div>
+								</div>
+								<div class="popup-actions" style="display:flex;gap:8px;margin-top:10px;">
+									<button class="navigate" onclick="navigateTo(${mlat},${mlng})" style="background:linear-gradient(90deg,#06b6d4,#00b894);color:#021019;padding:8px 18px;border-radius:8px;font-weight:600;border:0;cursor:pointer">Navigate</button>
+									<button class="call" onclick="window.open('tel:${phone}')" style="background:#fff;color:#0f1724;padding:8px 18px;border-radius:8px;font-weight:600;border:1px solid #eee;cursor:pointer">Call</button>
+								</div>
+								<button class="pay" onclick="showPay('${names[i]}')" style="margin-top:12px;width:100%;padding:10px 0;border-radius:8px;background:transparent;border:1.5px solid #ffd166;color:#ffb700;font-weight:600;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer">
+									<span style="font-size:18px">&#128273;</span> Pay via QR Code
+								</button>
+							</div>
+						`;
+						const m = L.marker([mlat, mlng]).addTo(mechanicsLayer);
+						m.bindPopup(popupHtml);
+					}
+		}
+
+		function navigateTo(lat,lng){
+			// Simple: pan to the mechanic and open directions link
+			map.setView([lat,lng],15);
+			const url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+			window.open(url, '_blank');
+		}
+
+			function showPay(name){
+				// Show a modal with QR code for UPI payment to srinivasreddylakkidi2275-1@okicici
+				const upiId = 'srinivasreddylakkidi2275-1@okicici';
+				const upiName = 'Srinivas Reddy';
+				const upiUri = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(upiName)}&cu=INR`;
+				let modal = document.getElementById('qrModal');
+				if (!modal) {
+					modal = document.createElement('div');
+					modal.id = 'qrModal';
+					modal.innerHTML = `
+						<div class="qr-modal-bg" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(10,18,30,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;">
+							<div class="qr-modal-content" style="background:#101a2b;padding:32px 24px;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.4);text-align:center;min-width:260px;max-width:90vw;">
+								<h3 style="margin-top:0;color:#fff;font-size:1.2rem">Pay via UPI QR Code</h3>
+								<p style="color:#cfe9f1;margin-bottom:12px">Scan to pay <br><b style='color:#ffd166'>${upiId}</b></p>
+								<img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(upiUri)}" alt="UPI QR Code" style="margin-bottom:16px;border-radius:8px;box-shadow:0 2px 8px #0002">
+								<br>
+								<button onclick="document.getElementById('qrModal').remove()" style="margin-top:10px;padding:8px 18px;border-radius:8px;background:var(--accent);color:#021019;font-weight:600;border:0;cursor:pointer">Close</button>
+							</div>
+						</div>
+					`;
+					modal.style.position = 'fixed';
+					modal.style.top = '0';
+					modal.style.left = '0';
+					modal.style.width = '100vw';
+					modal.style.height = '100vh';
+					modal.style.zIndex = '9999';
+					document.body.appendChild(modal);
+				}
+			}
+
+		function onLocationSuccess(pos){
+			const lat = pos.coords.latitude;
+			const lng = pos.coords.longitude;
+			map.setView([lat,lng],14);
+			// ensure Leaflet recalculates size after view change so it doesn't visually overflow
+			setTimeout(()=>{ try{ map.invalidateSize(); }catch(e){} }, 200);
+			if(userMarker) userMarker.setLatLng([lat,lng]);
+			else userMarker = L.circleMarker([lat,lng],{radius:8,fillColor:'#00b894',color:'#fff',weight:2}).addTo(map).bindPopup('You are here');
+			generateNearby(lat,lng);
+		}
+
+		function onLocationError(err){
+			console.warn('geolocation error', err);
+			// Fallback: sample coords (central London)
+			const lat = 51.5074, lng = -0.1278;
+			map.setView([lat,lng],12);
+			setTimeout(()=>{ try{ map.invalidateSize(); }catch(e){} }, 200);
+			generateNearby(lat,lng);
+		}
+
+		document.getElementById('findBtn').addEventListener('click', ()=>{
+			if(navigator.geolocation){
+				navigator.geolocation.getCurrentPosition(onLocationSuccess, onLocationError, {timeout:10000});
+			} else onLocationError({message:'Geolocation not supported'});
+		});
+
+		document.getElementById('learnBtn').addEventListener('click', ()=>{
+			document.getElementById('learn').scrollIntoView({behavior:'smooth'});
+		});
+
+		// small UX: auto-try to center roughly using IP-based fallback via public API (optional)
+		(function tryQuickLocate(){
+			if(navigator.geolocation) return; // if browser supports it, wait for user
+			fetch('https://ipapi.co/json/').then(r=>r.json()).then(d=>{
+				if(d && d.latitude){ map.setView([d.latitude,d.longitude],10); }
+			}).catch(()=>{});
+		})();
+	</script>
+</body>
+</html>
