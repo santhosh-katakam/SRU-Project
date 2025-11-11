@@ -49,45 +49,73 @@
 		.feature h4{margin:0 0 8px}
 		footer{text-align:center;color:var(--muted);margin:36px 0 8px}
 		@media (max-width:900px){.hero{grid-template-columns:1fr;}.container{padding:12px}.brand .title{display:none}}
+
+		/* language modal */
+		.lang-modal-bg{position:fixed;inset:0;background:rgba(5,10,18,0.75);display:flex;align-items:center;justify-content:center;z-index:99999}
+		.lang-modal{background:linear-gradient(180deg,#061426,#08192a);color:#e6eef6;padding:22px;border-radius:12px;min-width:320px;max-width:92%;text-align:center}
+		.lang-list{display:flex;gap:8px;justify-content:center;margin-top:12px}
+		.lang-list button{padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
+		.lang-en{background:#0b1220;color:#cfe9f1}
+		.lang-hi{background:#f59e0b;color:#081019}
+		.lang-te{background:#06b6d4;color:#021019}
 	</style>
 </head>
 <body>
+
+	<!-- Language selection modal (shown on first visit) -->
+	<div id="langModal" class="lang-modal-bg" style="display:none">
+		<div class="lang-modal">
+			<div style="font-size:20px;font-weight:700">Select Language / भाषा चुनें / భాషని ఎంచుకోండి</div>
+			<div style="margin-top:8px;color:var(--muted);font-size:13px">Choose your preferred language to view the site</div>
+			<div class="lang-list">
+				<button class="lang-en" data-lang="en">English</button>
+				<button class="lang-hi" data-lang="hi">हिन्दी</button>
+				<button class="lang-te" data-lang="te">తెలుగు</button>
+			</div>
+			<div style="margin-top:12px;font-size:13px">
+				<label style="display:inline-flex;align-items:center;gap:8px;cursor:pointer"><input id="rememberLang" type="checkbox"> Remember my choice</label>
+			</div>
+			<div style="margin-top:10px;font-size:12px;color:var(--muted)">If you don't check "Remember my choice" the site will ask for language each time you open it.</div>
+		</div>
+	</div>
+
 	<div class="container">
 		<header>
 			<div class="brand">
 				<div class="logo">RR</div>
 				<div>
 					<div class="title"><strong>RescueRide</strong></div>
-					<div style="font-size:12px;color:var(--muted)">24/7 Emergency Vehicle Assistance</div>
+					<div data-i18n="site_tagline" style="font-size:12px;color:var(--muted)">24/7 Emergency Vehicle Assistance</div>
 				</div>
 			</div>
 			<nav style="display:flex;gap:12px;align-items:center">
-				<a href="#features" style="color:#cfe9f1;text-decoration:none">Features</a>
-				<a href="#learn" style="color:#cfe9f1;text-decoration:none">Learn</a>
+				<a href="#features" style="color:#cfe9f1;text-decoration:none" data-i18n="nav_features">Features</a>
+				<a href="#learn" style="color:#cfe9f1;text-decoration:none" data-i18n="nav_learn">Learn</a>
+				<button id="changeLangBtn" class="btn btn-ghost" style="margin-left:8px">Change Language</button>
 			</nav>
 		</header>
 
 		<section class="hero">
 			<div>
 				<div class="card">
-					<h1>Find Nearby Mechanics in Seconds</h1>
-					<p class="lead">Vehicle breakdown? No problem. Connect with trusted mechanics and towing services near you instantly. GPS-powered, reliable, and fast.</p>
+					<h1 data-i18n="h1">Find Nearby Mechanics in Seconds</h1>
+					<p class="lead" data-i18n="lead">Vehicle breakdown? No problem. Connect with trusted mechanics and towing services near you instantly. GPS-powered, reliable, and fast.</p>
 					<div class="cta">
-						<button id="findBtn" class="btn btn-primary">Find Mechanics Now</button>
-						<button id="learnBtn" class="btn btn-ghost">Learn More</button>
+						<button id="findBtn" class="btn btn-primary" data-i18n="find_button">Find Mechanics Now</button>
+						<button id="learnBtn" class="btn btn-ghost" data-i18n="learn_button">Learn More</button>
 					</div>
 					<div class="features" id="features">
 						<div class="feature">
-							<h4>Real-Time GPS</h4>
-							<p style="color:var(--muted);margin:0">Track nearby mechanics and get live navigation to their location.</p>
+							<h4 data-i18n="real_time_title">Real-Time GPS</h4>
+							<p style="color:var(--muted);margin:0" data-i18n="real_time_desc">Track nearby mechanics and get live navigation to their location.</p>
 						</div>
 						<div class="feature">
-							<h4>Verified Professionals</h4>
-							<p style="color:var(--muted);margin:0">All mechanics are verified with ratings and reviews from real customers.</p>
+							<h4 data-i18n="verified_title">Verified Professionals</h4>
+							<p style="color:var(--muted);margin:0" data-i18n="verified_desc">All mechanics are verified with ratings and reviews from real customers.</p>
 						</div>
 						<div class="feature">
-							<h4>Instant Payment</h4>
-							<p style="color:var(--muted);margin:0">Secure QR code payments for transparent and hassle-free transactions.</p>
+							<h4 data-i18n="instant_title">Instant Payment</h4>
+							<p style="color:var(--muted);margin:0" data-i18n="instant_desc">Secure QR code payments for transparent and hassle-free transactions.</p>
 						</div>
 					</div>
 				</div>
@@ -102,20 +130,158 @@
 
 		<section id="learn" style="margin-top:18px">
 			<div class="card">
-				<h3>How it works</h3>
+				<h3 data-i18n="how_title">How it works</h3>
 				<ol style="color:var(--muted)">
-					<li>Tap "Find Mechanics Now" and allow location access.</li>
-					<li>See nearby mechanics on the live map, tap a marker to view details.</li>
-					<li>Contact, navigate, and pay instantaneously via secure QR.</li>
+					<li data-i18n="step1">Tap "Find Mechanics Now" and allow location access.</li>
+					<li data-i18n="step2">See nearby mechanics on the live map, tap a marker to view details.</li>
+					<li data-i18n="step3">Contact, navigate, and pay instantaneously via secure QR.</li>
 				</ol>
 			</div>
 		</section>
 
-		<footer>Built with ❤️ — Demo static site (mock data). Geolocation requires HTTPS in some browsers.</footer>
+	<footer data-i18n="footer">Built with ❤️ — Demo static site (mock data). Geolocation requires HTTPS in some browsers.</footer>
 	</div>
 
 	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 	<script>
+		// --- i18n translations for English, Hindi and Telugu ---
+		const I18N = {
+			'en': {
+				site_tagline: '24/7 Emergency Vehicle Assistance',
+				site_title: 'RescueRide — Find Nearby Mechanics Instantly',
+				h1: 'Find Nearby Mechanics in Seconds',
+				lead: 'Vehicle breakdown? No problem. Connect with trusted mechanics and towing services near you instantly. GPS-powered, reliable, and fast.',
+				find_button: 'Find Mechanics Now',
+				learn_button: 'Learn More',
+				nav_features: 'Features',
+				nav_learn: 'Learn',
+				real_time_title: 'Real-Time GPS',
+				real_time_desc: 'Track nearby mechanics and get live navigation to their location.',
+				verified_title: 'Verified Professionals',
+				verified_desc: 'All mechanics are verified with ratings and reviews from real customers.',
+				instant_title: 'Instant Payment',
+				instant_desc: 'Secure QR code payments for transparent and hassle-free transactions.',
+				how_title: 'How it works',
+				step1: 'Tap "Find Mechanics Now" and allow location access.',
+				step2: 'See nearby mechanics on the live map, tap a marker to view details.',
+				step3: 'Contact, navigate, and pay instantaneously via secure QR.',
+				footer: 'Built with ❤️ — Demo static site (mock data). Geolocation requires HTTPS in some browsers.',
+				available_now: 'Available Now',
+				years_of_exp: '{n} years of experience',
+				services_label: 'Services',
+				navigate: 'Navigate',
+				call: 'Call',
+				pay_via_qr: 'Pay via QR Code',
+				you_are_here: 'You are here',
+				pay_modal_title: 'Pay via UPI QR Code',
+				scan_to_pay: 'Scan to pay',
+				close: 'Close'
+			},
+			'hi': {
+				site_tagline: '24/7 आपातकालीन वाहन सहायता',
+				site_title: 'RescueRide — पास के मेकेनिक तुरंत खोजें',
+				h1: 'कुछ ही सेकंड में पास के मेकेनिक खोजें',
+				lead: 'वाहन खराब? कोई बात नहीं। विश्वसनीय मेकेनिक और टोइंग सेवाओं से तुरंत जुड़ें। GPS-आधारित, भरोसेमंद और तेज।',
+				find_button: 'अब मेकेनिक खोजें',
+				learn_button: 'और जानें',
+				nav_features: 'विशेषताएँ',
+				nav_learn: 'जानें',
+				real_time_title: 'रीयल-टाइम GPS',
+				real_time_desc: 'पास के मेकेनिक को ट्रैक करें और लाइव नेविगेशन प्राप्त करें।',
+				verified_title: 'पुष्ट पेशेवर',
+				verified_desc: 'सभी मेकेनिक रेटिंग और रिव्यू के साथ सत्यापित हैं।',
+				instant_title: 'तुरंत भुगतान',
+				instant_desc: 'सुरक्षित QR कोड भुगतान।',
+				how_title: 'यह कैसे काम करता है',
+				step1: '"अब मेकेनिक खोजें" पर टैप करें और लोकेशन की अनुमति दें।',
+				step2: 'लाइव मैप पर पास के मेकेनिक देखें, विवरण के लिए मार्कर पर टैप करें।',
+				step3: 'संपर्क करें, नेविगेट करें और सुरक्षित QR के जरिए तुरंत भुगतान करें।',
+				footer: 'Demo साइट — Geolocation कुछ ब्राउज़रों में HTTPS आवश्यक है।',
+				available_now: 'अब उपलब्ध',
+				years_of_exp: '{n} वर्षों का अनुभव',
+				services_label: 'सेवाएँ',
+				navigate: 'नेविगेट',
+				call: 'कॉल',
+				pay_via_qr: 'QR कोड से भुगतान',
+				you_are_here: 'आप यहाँ हैं',
+				pay_modal_title: 'UPI QR कोड के माध्यम से भुगतान',
+				scan_to_pay: 'भुगतान करने के लिए स्कैन करें',
+				close: 'बंद करें'
+			},
+			'te': {
+				site_tagline: '24/7 ఎమర్జెన్సీ వాహన సహాయం',
+				site_title: 'RescueRide — సమీప మెకానిక్‌లు తక్షణం కనుగొనండి',
+				h1: 'కొద్ది సెకన్సుల్లో సమీప మెకానిక్‌లను కనుగొనండి',
+				lead: 'వాహనం నష్టపోయింది? പ്രശ్నే లేదు. విశ్వసనీయ మెకానిక్‌లు మరియు టోయింగ్ సేవలతో తక్షణమే కనెక్ట్ అవ్వండి. GPS- ఆధారిత, నమ్మదగినది, వేగవంతం.',
+				find_button: 'ఇప్పుడే మెకానిక్‌లను కనుగొనండి',
+				learn_button: 'మరింత తెలుసుకోండి',
+				nav_features: 'ఫీచర్లు',
+				nav_learn: 'తెలుసుకోండి',
+				real_time_title: 'రియల్-టైమ్ GPS',
+				real_time_desc: 'సమీప మెకానిక్‌లను ట్రాక్ చేయండి మరియు లైవ్ మార్గనిర్దేశాన్ని పొందండి.',
+				verified_title: 'తనిఖీ చేసిన వృత్తిగతులు',
+				verified_desc: 'అన్ని మెకానిక్‌లు రేటింగ్‌లు మరియు రివ్యూలతో తనిఖీ చేయబడ్డారు.',
+				instant_title: 'తక్షణ చెల్లింపు',
+				instant_desc: 'సురక్షిత QR కోడ్ చెల్లింపులు.',
+				how_title: 'ఇది ఎలా పని చేస్తుంది',
+				step1: '"ఇప్పుడు మెకానిక్‌లను కనుగొనండి" ను ట్యాప్ చేసి స్థానం అనుమతిని ఉపయోగించి అనుమతించండి.',
+				step2: 'లైవ్ మ్యాప్లో సమీప మెకానిక్‌లను చూడండి, వివరాలకు మార్కర్‌ను ట్యాప్ చేయండి.',
+				step3: 'సంప్రదించండి, నావిగేట్ చేయండి మరియు సురక్షిత QR ద్వారా తక్షణంగా చెల్లించండి.',
+				footer: 'డెమో సైట్ — Geolocation కొంత బ్రౌజర్లలో HTTPS అవసరం.',
+				available_now: 'ఇప్పుడే లభ్యం',
+				years_of_exp: '{n} సంవత్సరాల అనుభవం',
+				services_label: 'సేవలు',
+				navigate: 'నావిగేట్',
+				call: 'కాల్',
+				pay_via_qr: 'QR కోడ్ ద్వారా చెల్లించండి',
+				you_are_here: 'మీరు ఇక్కడ ఉన్నారు',
+				pay_modal_title: 'UPI QR కోడ్ ద్వారా చెల్లించండి',
+				scan_to_pay: 'చెల్లించడానికి స్కాన్ చేయండి',
+				close: 'ముడుచు'
+			}
+		};
+
+		function t(key, params){
+			const lang = window.__lang || 'en';
+			let val = (I18N[lang] && I18N[lang][key]) || (I18N['en'] && I18N['en'][key]) || '';
+			if(params){
+				for(const k in params) val = val.replace(`{${k}}`, params[k]);
+			}
+			return val;
+		}
+
+		function applyTranslations(){
+			const els = document.querySelectorAll('[data-i18n]');
+			els.forEach(el=>{
+				const key = el.getAttribute('data-i18n');
+				if(key) {
+					if(el.dataset.i18nHtml === 'true') el.innerHTML = t(key);
+					else el.innerText = t(key);
+				}
+			});
+			document.title = t('site_title');
+		}
+
+		function setLanguage(lang, remember){
+			window.__lang = lang;
+			if(remember) localStorage.setItem('site_lang', lang);
+			applyTranslations();
+			// if we previously located user, regenerate nearby popups so they use the new language
+			if(window.__lastLocation){
+				generateNearby(window.__lastLocation[0], window.__lastLocation[1]);
+			}
+		}
+
+		// initialize language modal: always ask on page open; pre-check "Remember" if previously saved
+		(function initLang(){
+			const saved = localStorage.getItem('site_lang');
+			try{
+				const rememberCb = document.getElementById('rememberLang');
+				if(rememberCb && saved) rememberCb.checked = true;
+			}catch(e){}
+			// always show modal so user explicitly picks language on each visit
+			document.getElementById('langModal').style.display='flex';
+		})();
 		// Minimal interactive behavior: geolocate, show user marker and nearby mocked mechanics
 		const map = L.map('map', {zoomControl:true, attributionControl:false}).setView([20,0],2);
 		L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom:19}).addTo(map);
@@ -155,21 +321,21 @@
 									<div class="popup-rating"><span style="color:#ffd166;font-size:1.1em">★</span> ${rating} <span style="color:#94a3b8;font-size:0.95em">• ${distance} km away</span></div>
 								</div>
 								<div class="popup-row" style="margin:8px 0 4px 0;display:flex;align-items:center;gap:10px;">
-									<span class="popup-available" style="background:#27ae60;color:#fff;padding:2px 10px;border-radius:12px;font-size:13px;font-weight:600;">Available Now</span>
-									<span style="color:#94a3b8;font-size:13px;display:flex;align-items:center;gap:4px"><span style="font-size:15px">&#128337;</span> ${experience} years of experience</span>
+									<span class="popup-available" style="background:#27ae60;color:#fff;padding:2px 10px;border-radius:12px;font-size:13px;font-weight:600;">${t('available_now')}</span>
+									<span style="color:#94a3b8;font-size:13px;display:flex;align-items:center;gap:4px"><span style="font-size:15px">&#128337;</span> ${t('years_of_exp',{n:experience})}</span>
 								</div>
 								<div class="popup-services" style="margin:8px 0 10px 0;">
-									<div style="color:#94a3b8;font-size:13px;margin-bottom:4px;font-weight:600">Services</div>
+									<div style="color:#94a3b8;font-size:13px;margin-bottom:4px;font-weight:600">${t('services_label')}</div>
 									<div style="display:flex;gap:6px;flex-wrap:wrap;">
 										${services.map(s => `<span style='background:#0b1220;color:#00b894;padding:3px 10px;border-radius:8px;font-size:13px;font-weight:500'>${s}</span>`).join(' ')}
 									</div>
 								</div>
 								<div class="popup-actions" style="display:flex;gap:8px;margin-top:10px;">
-									<button class="navigate" onclick="navigateTo(${mlat},${mlng})" style="background:linear-gradient(90deg,#06b6d4,#00b894);color:#021019;padding:8px 18px;border-radius:8px;font-weight:600;border:0;cursor:pointer">Navigate</button>
-									<button class="call" onclick="window.open('tel:${phone}')" style="background:#fff;color:#0f1724;padding:8px 18px;border-radius:8px;font-weight:600;border:1px solid #eee;cursor:pointer">Call</button>
+									<button class="navigate" onclick="navigateTo(${mlat},${mlng})" style="background:linear-gradient(90deg,#06b6d4,#00b894);color:#021019;padding:8px 18px;border-radius:8px;font-weight:600;border:0;cursor:pointer">${t('navigate')}</button>
+									<button class="call" onclick="window.open('tel:${phone}')" style="background:#fff;color:#0f1724;padding:8px 18px;border-radius:8px;font-weight:600;border:1px solid #eee;cursor:pointer">${t('call')}</button>
 								</div>
 								<button class="pay" onclick="showPay('${names[i]}')" style="margin-top:12px;width:100%;padding:10px 0;border-radius:8px;background:transparent;border:1.5px solid #ffd166;color:#ffb700;font-weight:600;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer">
-									<span style="font-size:18px">&#128273;</span> Pay via QR Code
+									<span style="font-size:18px">&#128273;</span> ${t('pay_via_qr')}
 								</button>
 							</div>
 						`;
@@ -197,11 +363,11 @@
 					modal.innerHTML = `
 						<div class="qr-modal-bg" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(10,18,30,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;">
 							<div class="qr-modal-content" style="background:#101a2b;padding:32px 24px;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.4);text-align:center;min-width:260px;max-width:90vw;">
-								<h3 style="margin-top:0;color:#fff;font-size:1.2rem">Pay via UPI QR Code</h3>
-								<p style="color:#cfe9f1;margin-bottom:12px">Scan to pay <br><b style='color:#ffd166'>${upiId}</b></p>
+								<h3 style="margin-top:0;color:#fff;font-size:1.2rem">${t('pay_modal_title')}</h3>
+								<p style="color:#cfe9f1;margin-bottom:12px">${t('scan_to_pay')} <br><b style='color:#ffd166'>${upiId}</b></p>
 								<img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(upiUri)}" alt="UPI QR Code" style="margin-bottom:16px;border-radius:8px;box-shadow:0 2px 8px #0002">
 								<br>
-								<button onclick="document.getElementById('qrModal').remove()" style="margin-top:10px;padding:8px 18px;border-radius:8px;background:var(--accent);color:#021019;font-weight:600;border:0;cursor:pointer">Close</button>
+								<button onclick="document.getElementById('qrModal').remove()" style="margin-top:10px;padding:8px 18px;border-radius:8px;background:var(--accent);color:#021019;font-weight:600;border:0;cursor:pointer">${t('close')}</button>
 							</div>
 						</div>
 					`;
@@ -221,8 +387,9 @@
 			map.setView([lat,lng],14);
 			// ensure Leaflet recalculates size after view change so it doesn't visually overflow
 			setTimeout(()=>{ try{ map.invalidateSize(); }catch(e){} }, 200);
+			window.__lastLocation = [lat,lng];
 			if(userMarker) userMarker.setLatLng([lat,lng]);
-			else userMarker = L.circleMarker([lat,lng],{radius:8,fillColor:'#00b894',color:'#fff',weight:2}).addTo(map).bindPopup('You are here');
+			else userMarker = L.circleMarker([lat,lng],{radius:8,fillColor:'#00b894',color:'#fff',weight:2}).addTo(map).bindPopup(t('you_are_here'));
 			generateNearby(lat,lng);
 		}
 
@@ -244,6 +411,27 @@
 		document.getElementById('learnBtn').addEventListener('click', ()=>{
 			document.getElementById('learn').scrollIntoView({behavior:'smooth'});
 		});
+
+		// wire language modal buttons
+		document.querySelectorAll('#langModal .lang-list button').forEach(btn=>{
+			btn.addEventListener('click', (e)=>{
+				const lang = e.currentTarget.getAttribute('data-lang');
+				const remember = !!document.getElementById('rememberLang') && document.getElementById('rememberLang').checked;
+				setLanguage(lang, remember);
+				document.getElementById('langModal').style.display='none';
+			});
+		});
+
+		// open language modal from header button
+		const changeLangBtn = document.getElementById('changeLangBtn');
+		if(changeLangBtn){
+			changeLangBtn.addEventListener('click', ()=>{
+				document.getElementById('langModal').style.display='flex';
+			});
+		}
+
+		// make popups reflect language when opened (re-generate nearby when language changes?)
+		// generateNearby already uses t() for static strings inside popup
 
 		// small UX: auto-try to center roughly using IP-based fallback via public API (optional)
 		(function tryQuickLocate(){
